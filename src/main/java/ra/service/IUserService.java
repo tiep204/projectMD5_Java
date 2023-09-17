@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface IUserService {
     List<User> findAll();
-    Optional<User> findByUserName(String username);
+    Optional<User> findByUsername(String username);
     User save(RegisterRequest registerRequest);
 }

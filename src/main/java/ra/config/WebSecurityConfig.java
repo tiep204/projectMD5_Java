@@ -3,6 +3,7 @@ package ra.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,9 +20,10 @@ import ra.security.jwt.JwtTokenFilter;
 import ra.security.user_principle.UserDetailService;
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // phan quyen truc tiep tren controller
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(prePostEnabled = true) //phan quyen truc tiep tren controller
+public class    WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
+    @Lazy
     private UserDetailService userDetailService;
     @Autowired
     private JwtEntryPoint jwtEntryPoint;
@@ -31,9 +33,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
@@ -44,20 +47,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // cáu hình phân qyền đường dẫn
-        http.cors().and().csrf().disable() // tắt cáu hình csrf
+        //cau hinh phan quyen duong dan
+        http.cors().and().csrf().disable() //tat cau hinh csrf
                 .authorizeRequests()
                 .antMatchers("/api/v4/auth/**").permitAll()
-//                .antMatchers("/api/v4/test/**").hasRole("ADMIN") // cau hinh theo pattern
-                .anyRequest().authenticated() // các đường dân khác phả được xác thực
+                .antMatchers("/api/v4/test/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // yếu cầu người dùng luôn xác thức bằng token
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

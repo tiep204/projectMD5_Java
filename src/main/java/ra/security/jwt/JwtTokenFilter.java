@@ -18,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
     public  final Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);

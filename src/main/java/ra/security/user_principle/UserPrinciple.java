@@ -8,15 +8,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ra.model.domain.Role;
 import ra.model.domain.User;
 
-
-import javax.persistence.Column;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
 import java.util.stream.Collectors;
 @Builder
 @Data
